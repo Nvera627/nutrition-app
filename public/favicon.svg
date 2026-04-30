@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Brand green rounded-square background -->
+  <rect width="32" height="32" rx="7" fill="#2d6a4f"/>
+  <!-- Leaf body in lighter green -->
+  <path d="M16 27 C11 23 7 18 7 13 C7 7 11 5 16 5 C21 5 25 7 25 13 C25 18 21 23 16 27Z" fill="#52b788"/>
+  <!-- Center vein -->
+  <line x1="16" y1="27" x2="16" y2="11" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- Side veins -->
+  <line x1="16" y1="17" x2="12" y2="14" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.75"/>
+  <line x1="16" y1="21" x2="20" y2="18" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.75"/>
+</svg>

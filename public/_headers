@@ -1,0 +1,17 @@
+/*
+  # Prevent the page from being embedded in an iframe (clickjacking protection)
+  X-Frame-Options: DENY
+
+  # Stop the browser from guessing file types (MIME sniffing protection)
+  X-Content-Type-Options: nosniff
+
+  # Only send the origin (no path) in the Referer header when navigating to other sites
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Disable browser features the app doesn't need
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+  # Content Security Policy — controls where the browser is allowed to load resources from.
+  # 'unsafe-inline' is kept for styles because Recharts injects inline styles.
+  # All Firebase SDK network calls go through *.googleapis.com and *.firebaseio.com.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com; img-src 'self' data:; frame-ancestors 'none';
