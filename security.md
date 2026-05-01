@@ -15,25 +15,79 @@
 
 > **Note:** Firebase API keys embedded in a web app are considered public by design — they identify the project, not grant admin access. Security is enforced by Firebase Security Rules and Authentication, not by keeping the API key secret.
 
-## Firestore Security Rules (Recommended)
+## Firestore Security Rules
 
-The database was created in test mode for development. Before submitting or sharing the app, update the rules in **Firestore → Rules** to:
+The database uses production-mode security rules enforced in `firestore.rules`. These rules are deployed to Firebase and are the active rules on the live database.
 
 ```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can only read and write their own data
-    match /users/{userId}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+    // Helper: user must be signed in AND must own the data
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Top-level user profile document
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Food entries — type enforcement on numeric fields
+    match /users/{userId}/foodEntries/{entryId} {
+      allow read, delete: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && request.resource.data.calories is number
+        && request.resource.data.protein  is number
+        && request.resource.data.carbs    is number
+        && request.resource.data.fat      is number;
+    }
+
+    // Water logs
+    match /users/{userId}/waterLogs/{logId} {
+      allow read, delete: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && request.resource.data.ounces is number;
+    }
+
+    // Weight logs
+    match /users/{userId}/weightLogs/{logId} {
+      allow read, delete: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && request.resource.data.weight is number;
+    }
+
+    // Exercise logs
+    match /users/{userId}/exerciseLogs/{logId} {
+      allow read, delete: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && request.resource.data.minutes is number;
+    }
+
+    // Goals (single document per user)
+    match /users/{userId}/goals/current {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Dashboard settings
+    match /users/{userId}/settings/dashboard {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Deny everything else explicitly
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
 ```
 
-This rule ensures:
-- A user must be **authenticated** (`request.auth != null`)
+These rules ensure:
+- A user must be **authenticated** (`request.auth != null`) via the `isOwner()` helper
 - A user can **only access their own data** (`request.auth.uid == userId`)
+- **Numeric fields are type-enforced** on write — calories, protein, carbs, fat, ounces, weight, and minutes must all be numbers, not strings or arbitrary values
+- **Everything not explicitly matched is denied** by the catch-all rule at the bottom
 
 ## Input Validation
 

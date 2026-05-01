@@ -16,6 +16,7 @@ import {
   deleteDoc,
   query,
   orderBy,
+  limit,
   serverTimestamp,
   setDoc,
   getDoc,
@@ -40,7 +41,7 @@ export async function addFoodEntry(userId, entry) {
 
 export async function getFoodEntries(userId) {
   const ref = collection(db, `users/${userId}/foodEntries`);
-  const q = query(ref, orderBy('date', 'desc'));
+  const q = query(ref, orderBy('date', 'desc'), limit(100));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
@@ -75,7 +76,7 @@ export async function addWaterLog(userId, log) {
 
 export async function getWaterLogs(userId) {
   const ref = collection(db, `users/${userId}/waterLogs`);
-  const q = query(ref, orderBy('date', 'desc'));
+  const q = query(ref, orderBy('date', 'desc'), limit(100));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
@@ -104,7 +105,7 @@ export async function addWeightLog(userId, log) {
 
 export async function getWeightLogs(userId) {
   const ref = collection(db, `users/${userId}/weightLogs`);
-  const q = query(ref, orderBy('date', 'desc'));
+  const q = query(ref, orderBy('date', 'desc'), limit(100));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
@@ -135,7 +136,7 @@ export async function addExerciseLog(userId, log) {
 
 export async function getExerciseLogs(userId) {
   const ref = collection(db, `users/${userId}/exerciseLogs`);
-  const q = query(ref, orderBy('date', 'desc'));
+  const q = query(ref, orderBy('date', 'desc'), limit(100));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }

@@ -49,8 +49,9 @@ npm install
 
 1. In the Firebase Console, click **Firestore Database**
 2. Click **Create database**
-3. Choose **Start in test mode** (you can tighten rules later)
+3. Choose **Start in production mode**
 4. Select a region close to you → **Enable**
+5. Once created, go to the **Rules** tab and paste in the full contents of `firestore.rules` from this project → click **Publish**
 
 ---
 
@@ -71,7 +72,7 @@ cp .env.example .env
 VITE_FIREBASE_API_KEY=your_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+VITE_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 ```

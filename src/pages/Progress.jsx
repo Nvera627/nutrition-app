@@ -80,7 +80,7 @@ export default function Progress() {
   const [editWeightId, setEditWeightId] = useState(null);
   const [savingWeight, setSavingWeight] = useState(false);
 
-  useEffect(() => { loadAll(); }, []);
+  useEffect(() => { loadAll(); }, [currentUser.uid]);
 
   async function loadAll() {
     setLoading(true);
@@ -104,6 +104,7 @@ export default function Progress() {
 
   async function handleWeightSubmit(e) {
     e.preventDefault();
+    setError('');
     if (!weightForm.weight || Number(weightForm.weight) <= 0) return setError('Enter a valid weight.');
     setSavingWeight(true);
     try {

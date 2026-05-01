@@ -39,6 +39,8 @@ nutrition-app/
 │   ├── firebase/
 │   │   ├── config.js           Firebase app init (reads env vars)
 │   │   └── firestore.js        All Firestore helper functions
+│   ├── utils/
+│   │   └── coachRules.js       Pure rule engine for AI Coach (no Firebase imports)
 │   ├── pages/
 │   │   ├── Login.jsx
 │   │   ├── SignUp.jsx

@@ -118,8 +118,8 @@ export function generateSuggestions({ foodEntries, waterLogs, weightLogs, exerci
   }
 
   // ── Exercise consistency rule ──────────────────────────────────────────────
-  const last3Days = [TODAY, daysAgo(1), daysAgo(2), daysAgo(3)];
-  const exercisedRecently = exerciseLogs.some((e) => last3Days.includes(e.date));
+  const recentDays = [TODAY, daysAgo(1), daysAgo(2), daysAgo(3)];
+  const exercisedRecently = exerciseLogs.some((e) => recentDays.includes(e.date));
 
   if (!exercisedRecently && exerciseLogs.length > 0) {
     suggestions.push({
