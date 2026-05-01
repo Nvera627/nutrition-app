@@ -165,6 +165,101 @@ src/
   context/          AuthContext — global auth state
   firebase/         Firebase config and Firestore helpers
   pages/            One file per page
+  utils/            Pure logic utilities (coachRules.js — AI Coach rule engine)
   styles/           global.css
 tests/              Vitest test files
 ```
+
+---
+
+## AI Models and Tools Used
+
+This project was built using two AI tools with distinct, intentional roles:
+
+| Tool | Role |
+|---|---|
+| **ChatGPT (OpenAI)** | Project planning, feature scoping, rubric alignment, and engineering structured prompts for debugging and code review |
+| **Claude Code (Anthropic)** | Full codebase generation, security hardening, debugging, deployment fixes, and in-depth professional code review |
+
+**Division of responsibilities:**
+- ChatGPT was used _before and around_ coding — to plan the project, define the scope, and engineer prompts that were then executed in Claude Code
+- Claude Code was used _during_ coding — to generate, debug, fix, and review all source files
+
+Detailed interaction logs with verbatim prompts are in:
+- [`Promts/claudechat.md`](Promts/claudechat.md) — Claude Code session log
+- [`Promts/Chatgptchat.md`](Promts/Chatgptchat.md) — ChatGPT session log
+
+---
+
+## AI Engineering Analysis
+
+### Strengths of AI Tools Used
+
+- **Speed:** The complete initial codebase (8 pages, Firebase integration, tests, documentation) was generated from a single detailed prompt — work that would have taken days manually was done in one session
+- **Structure:** Both tools produced well-organized, logical output when given specific constraints — folder structure, Firestore schema, security rules, and routing were all correctly designed on the first pass
+- **Security depth:** Claude Code independently implemented field whitelisting on all Firestore write functions, type enforcement in security rules, and HTTP security headers (CSP, X-Frame-Options) without being explicitly asked for each one
+- **Error catching:** Claude Code caught its own syntax error (apostrophe in a single-quoted string) during the test run and fixed it
+
+### Limitations of AI Tools Used
+
+- **Initial over-scoping:** ChatGPT's first planning response included far more features than were realistic for the time available — required multiple pushback prompts before the scope was right
+- **Incorrect initial diagnosis:** When debugging the Cloudflare `_redirects` loop error, the ChatGPT-engineered prompt assumed the redirect rule content was wrong. Claude Code's investigation found the rule was correct — the problem was a stale empty file from a partial build
+- **Missed production-only issues:** The CSP was missing `https://*.firebaseapp.com` in `connect-src` — this did not cause errors locally but broke Firebase Auth in production. The AI did not catch it until deployment failed
+- **Documentation inconsistency introduced:** The original `security.md` described simplified Firestore rules that didn't match the actual deployed rules — an inconsistency Claude Code introduced and later caught during its own code review
+
+### Tradeoffs Encountered
+
+| Tradeoff | Decision Made |
+|---|---|
+| Real AI API vs. rule-based coach | Chose rule-based — no external API costs or complexity, all logic runs in the browser |
+| Simplicity vs. completeness | Chose simplicity — fewer features done well over many features done partially |
+| One AI tool vs. multiple | Used ChatGPT for planning and prompt engineering, Claude Code for implementation — clearer division of responsibilities |
+| Speed of generation vs. review | Every AI output was reviewed and tested before acceptance — 18 unit tests enforced this |
+
+### Prompting Strategies That Worked
+
+- **Detailed upfront specs with explicit constraints:** The initial Claude Code prompt included the full tech stack, every page name, the Firestore schema, deployment target, and test framework — specificity eliminated guesswork
+- **Plan-first, then execute:** For security hardening and UX improvements, Claude Code was asked to produce a plan for approval before writing any code — this prevented scope creep and gave full control over what was changed
+- **Verbatim error output:** Pasting exact console errors and terminal output into prompts gave Claude Code enough context to identify root causes rather than guessing
+
+### Prompting Strategies That Failed
+
+- **Vague initial prompts to ChatGPT:** Asking to "plan everything" without constraints produced an over-scoped plan that required several correction rounds
+- **Assuming the AI's diagnosis was correct:** The Cloudflare debugging prompt (engineered by ChatGPT) assumed the redirect rule content was wrong — accepting this framing would have led to modifying a rule that was already correct. Claude Code's own investigation found the actual cause
+
+---
+
+## Engineering Reflection
+
+### What Would Have Been Different Without AI
+
+- The project would have taken significantly longer to plan and structure — manually deciding on the Firestore schema, routing architecture, security rule design, and component breakdown would have required research across multiple sources
+- The security implementation (field whitelisting, type enforcement in Firestore rules, CSP headers) would likely have been minimal or skipped entirely — these are not obvious beginner choices
+- The codebase would have been less consistent — naming conventions, error handling patterns, and component structure would have drifted across files written at different times
+
+### What AI Improved
+
+- **Development speed** — a complete, deployable codebase was ready within a single session
+- **Security posture** — the app has defense-in-depth security (Firestore rules, input whitelisting, HTTP headers) that goes beyond what a beginner would typically implement
+- **Test coverage** — 18 tests across two files, structured correctly with Firebase mocking, were generated alongside the code rather than as an afterthought
+- **Documentation** — `architecture.md`, `security.md`, and this `README.md` were all generated with a level of detail that would have taken hours to write manually
+
+### What AI Degraded or Required Correction
+
+- **Initial over-scoping** — ChatGPT's first plan required multiple rounds of pushback before the scope was realistic
+- **Bugs introduced** — Claude Code introduced a syntax error (apostrophe in a string literal), a missing closing JSX tag, and an outdated storage bucket format in example files — all caught and fixed, but introduced by the AI in the first place
+- **Documentation drift** — `security.md` was left describing old simplified rules after the actual rules were updated to a more detailed version — caught during the code review phase
+- **Production blind spots** — the missing `firebaseapp.com` CSP domain only surfaced after deployment, not during local development
+
+---
+
+## Supporting Documentation
+
+| File | Purpose |
+|---|---|
+| [`architecture.md`](architecture.md) | Full system architecture, Firestore schema, data flow, and routing table |
+| [`security.md`](security.md) | Security implementation details, Firestore rules, CSP policy, and input validation |
+| [`CLAUDE.md`](CLAUDE.md) | Complete breakdown of what Claude Code generated vs. what the student did |
+| [`Promts/claudechat.md`](Promts/claudechat.md) | Verbatim Claude Code prompt log with mistakes, fixes, and reflections |
+| [`Promts/Chatgptchat.md`](Promts/Chatgptchat.md) | Verbatim ChatGPT prompt log with planning and prompt engineering sessions |
+| [`Promts/Ai Testing/ClaudeReview.md`](Promts/Ai%20Testing/ClaudeReview.md) | Professional code review performed by Claude Code acting as a senior engineer |
