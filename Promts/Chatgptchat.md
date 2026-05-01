@@ -13,7 +13,7 @@ ChatGPT was used throughout the planning phase of BalanceBite, a React + Firebas
 
 ## Initial Prompt
 
-> "I want to build a web-based nutrition app where I can track what I eat and reach my health goals. It should be simple but robust and follow my class rubric. Help me plan everything."
+> "I am starting a project for my class, i want build a nutrition app that i can track what i eat and helps me reach my health goals, i want it to be a robust app that functions reliably and has a simple ux. I have the rules/ rubric above in the screenshots, what i want you to do is take your time and look through all of that information and lets start out by building a plan that touches on everything listed in the rubric. But before anything is done yet i want you to ask me questions until you are 95 percent sure you know what i want and not what i think i want."
 
 **What was wanted:** A complete project plan aligned with the class rubric — clear list of features and pages, a realistic approach given limited time, and a beginner-friendly tech stack.
 
